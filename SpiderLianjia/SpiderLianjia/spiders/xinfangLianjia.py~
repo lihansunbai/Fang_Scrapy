@@ -1,0 +1,65 @@
+#!/usr/bin/env python
+# coding=utf-8
+
+import scrapy
+import demjson
+from SpiderLianjia.items import SpiderlianjiaItem
+from SpiderLianjia.spiders.startURL import startURL
+
+class xinfangLianjia(scrapy.Spider):
+    name = 'xinfangLianjia'
+    allowed_domains = ['lianjia.com']
+    start_urls = startURL.xinfangURL
+
+    def parse(self, response):
+        house_page_query = '//body/div/div/div/div/ul[@id="house-lst"]/li/div[@class="info-panel"]/div[1]/h2/a[@href]'
+        for info in response.xpath(house_page_query):
+            house_page_href = info.xpath('attribute::href').extract()[0]
+            #house_page_url = 'http://cs.fang.lianjia.com' + house_page_href
+            house_page_root = response.request.url.split('/')[2]
+            house_page_url = 'http://'+ house_page_root + house_page_href
+            
+            yield scrapy.Request(house_page_url,callback=self.parse_house_page)
+
+    def parse_house_page(self,response):
+        item = SpiderlianjiaItem()
+        item['houseTitle'] = response.xpath('//title/text()').extract()[0]
+        item['houseCity'] = response.xpath('//title/text()').extract()[0].split('-')[-1][3:-1]
+
+        #此XPath节点可以获得房屋的所有基本信息
+        house_info_query = '//body/div/div/div[@class="banner-box"]'
+
+        name_query = 'div[@class="box-left"]/div/div/a/h1/text()'
+        item['houseName'] = response.xpath(house_info_query).xpath(name_query).extract()[0]
+
+        address_query = 'div[@class="box-left"]/div/div/p[@class="where"]/span/attribute::title'
+        item['houseAddress'] = response.xpath(house_info_query).xpath(address_query).extract()[0]
+
+        time_query = 'div[@class="box-left"]/div/div/p[@class="when"]/span[2]/text()'
+        item['housePublishedTime'] = response.xpath(house_info_query).xpath(time_query).extract()[0]
+
+        price_query = 'div[@class="box-left"]/div/p[@class="jiage"]/span[2]/text()'
+        item['housePrice'] = response.xpath(house_info_query).xpath(price_query).extract()[0]
+
+        #此XPath匹配经纬度信息
+        latlon_query = '//body/div/script[@type="text/javascript"]/text()'
+        latlon = response.xpath(latlon_query).re(r'point.*\]')[0]
+        item['houseBaiduLongitude'] = latlon.split('\'')[1]
+        item['houseBaiduLatitude'] = latlon.split('\'')[3]
+
+        #匹配历史价格
+        time = response.xpath('//html').re(r'trend.*,')[0].split(':')[1][:-1]
+        price_guapai = response.xpath('//html').re(r'loupanData.*,')[0].split(':')[1][:-1]
+        price_chengjiao = response.xpath('//html').re(r'loupanSeData.*,')[0].split(':')[1][:-1]
+        item['houseHistoryPrice'] = {
+            'time' : time,
+            'price_chengjiao' : price_chengjiao,
+            'price_guapai' : price_guapai,
+
+        }
+
+        item['housePublishedTime'] = time.split(',')[0].split('"')[1]
+
+
+        yield item
+        

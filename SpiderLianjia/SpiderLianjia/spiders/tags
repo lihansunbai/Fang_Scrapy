@@ -1,0 +1,16 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+allowed_domains	xinfangLianjia.py	/^    allowed_domains = ['lianjia.com']$/;"	v	class:xinfangLianjia
+ershoufangURL	startURL.py	/^    ershoufangURL = [$/;"	v	class:startURL
+name	xinfangLianjia.py	/^    name = 'xinfangLianjia'$/;"	v	class:xinfangLianjia
+parse	xinfangLianjia.py	/^    def parse(self, response):$/;"	m	class:xinfangLianjia	access:public
+parse_house_page	xinfangLianjia.py	/^    def parse_house_page(self,response):$/;"	m	class:xinfangLianjia	access:public
+startURL	startURL.py	/^class startURL:$/;"	c	inherits:
+start_urls	xinfangLianjia.py	/^    start_urls = ['http:\/\/cs.fang.lianjia.com\/loupan\/']$/;"	v	class:xinfangLianjia
+xinfangLianjia	xinfangLianjia.py	/^class xinfangLianjia(scrapy.Spider):$/;"	c	inherits:scrapy.Spider
+xinfangURL	startURL.py	/^    xinfangURL = [$/;"	v	class:startURL
+zufangURL	startURL.py	/^    zufangURL = [$/;"	v	class:startURL
