@@ -69,7 +69,7 @@ ITEM_PIPELINES = {
     'Spider5i5j.pipelines.xinfang5i5jPipeline': 1000,
     'Spider5i5j.pipelines.ershoufang5i5jPipeline': 1000,
     'Spider5i5j.pipelines.zufang5i5jPipeline': 1000,
-    'Spider5i5j.pipelines.city5i5jPipeline': 1,
+    #'Spider5i5j.pipelines.city5i5jPipeline': 1,
 }
 
 

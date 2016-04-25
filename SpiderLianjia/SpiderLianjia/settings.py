@@ -69,7 +69,7 @@ NEWSPIDER_MODULE = 'SpiderLianjia.spiders'
 ITEM_PIPELINES = {
     'SpiderLianjia.pipelines.xinfangLianjiaPipeline': 1000,
     'SpiderLianjia.pipelines.ershoufangLianjiaPipeline': 1000,
-    'SpiderLianjia.pipelines.zufangLianjiaPipeline': 1000
+    #'SpiderLianjia.pipelines.zufangLianjiaPipeline': 1000
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

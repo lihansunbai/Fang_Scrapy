@@ -68,7 +68,7 @@ ITEM_PIPELINES = {
     'SpiderGanji.pipelines.xinfangGanjiPipeline': 1000,
     'SpiderGanji.pipelines.ershoufangGanjiPipeline': 1000,
     'SpiderGanji.pipelines.zufangGanjiPipeline': 1000,
-    'SpiderGanji.pipelines.cityGanjiPipeline': 1000
+    #'SpiderGanji.pipelines.cityGanjiPipeline': 1000
 
 }
 

@@ -68,7 +68,7 @@ NEWSPIDER_MODULE = 'Spider58.spiders'
 ITEM_PIPELINES = {
     'Spider58.pipelines.ershoufang58Pipeline': 1000,
     'Spider58.pipelines.zufang58Pipeline': 1000,
-    'Spider58.pipelines.city58Pipeline': 1000,
+    #'Spider58.pipelines.city58Pipeline': 1000,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
