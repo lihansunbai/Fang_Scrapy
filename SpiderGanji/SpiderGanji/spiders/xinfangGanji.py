@@ -13,9 +13,10 @@ class xinfangGanji(scrapy.Spider):
 
     def parse(self, response):
         house_page_query = '//body/div/div/div/dl/dd/div/a'
+        house_page_root = response.request.url.split('/')[2]
         for info in response.xpath(house_page_query):
             house_page_href = info.xpath('attribute::href').extract()[0]
-            house_page_url = 'http://cs.ganji.com' + house_page_href
+            house_page_url = 'http://'+ house_page_root + house_page_href
             house_page_log = info.xpath('attribute::gjalog_fang').extract()[0]
             temp_time = house_page_log.split('@')[2]
             housePublishedTiem = temp_time.split('=')[1]
