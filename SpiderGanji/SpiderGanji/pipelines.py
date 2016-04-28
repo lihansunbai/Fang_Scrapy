@@ -4,7 +4,6 @@
 #
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
-import json
 import sys
 import csv
 import time
@@ -40,8 +39,11 @@ class xinfangGanjiPipeline(object):
 	  times = '%d'%time_list[0]+'%d'%time_list[1]
 	  
         #格式化item为CSV格式数据       
-        price_chengjiao = item['housePrice']
-        price_guapai = item['housePrice']
+        house_area = item['houseArea']
+        price_chengjiao_tmp = item['housePrice']
+        price_guapai_tmp = item['housePrice']
+        price_chengjiao = string.atof(price_chengjiao_tmp) / string.atof(house_area) * 10000
+        price_guapai = string.atof(price_guapai_tmp) / string.atof(house_area) * 10000
         house_name = item['houseName'].strip()
         line = (times,house_name,item['houseCity'],price_chengjiao,price_guapai,item['houseArea'],item['houseAddress'],item['houseBaiduLatitude'],item['houseBaiduLongitude'],item['houseTitle'])
         csvWriter.writerow(line)
