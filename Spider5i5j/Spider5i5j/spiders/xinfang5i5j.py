@@ -18,6 +18,6 @@ class xinfang5i5j(scrapy.Spider):
             item['houseCity'] = response.xpath('//body/nav/div/a/span/text()').extract()[0]
             item['houseBaiduLongitude'] = info.xpath('attribute::x').extract()[0]
             item['houseBaiduLatitude'] = info.xpath('attribute::y').extract()[0]
-            item['houseName'] = info.xpath('//div/h2/a/text()').extract()[0]
-            item['housePrice'] = info.xpath('//div/dl/dt/h3/text()').extract()[0]
+            item['houseName'] = info.xpath('div/h2/a/text()').extract()[0]
+            item['housePrice'] = info.xpath('div/dl/dt/h3/text()').extract()[0]
             yield item
