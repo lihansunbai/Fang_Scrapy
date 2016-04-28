@@ -61,6 +61,6 @@ class ershoufang58(scrapy.Spider):
         for address in info_3:
             temp_addr = temp_addr + '-' + address
 
-        item['houseAddress'] = temp_addr
+        item['houseAddress'] = temp_addr.lstrip('-')
 
         yield item
