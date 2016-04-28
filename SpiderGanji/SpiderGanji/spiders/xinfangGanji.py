@@ -36,7 +36,7 @@ class xinfangGanji(scrapy.Spider):
 
         area_query = 'li[2]/text()'
         temp_area = response.xpath(house_info_query).xpath(area_query).extract()[0]
-        item['houseArea'] = temp_area.split('-')[1]
+        item['houseArea'] = temp_area.split('-')[1][:-1]
 
         name_query = 'li[5]/a/text()'
         name_query_2 = 'li[5]/span[2]/text()'
@@ -50,17 +50,22 @@ class xinfangGanji(scrapy.Spider):
         houseDistrict = ''
         for dist in temp_district:
             houseDistrict = houseDistrict + '-' + dist
-        item['houseDistrict'] = houseDistrict
+        item['houseDistrict'] = houseDistrict.lstrip('-')
 
         address_query = 'li[7]/span[@title]/text()'
         item['houseAddress'] = response.xpath(house_info_query).xpath(address_query).extract()[0]
 
         #此节点匹配经纬度信息
-        data = response.xpath('//body/div/div/div/div/div/div[@class="js-map-tab js-so-map-tab"]/attribute::data-ref').extract()[0]
-        data_json = demjson.decode(data)
-        lnglat = data_json['lnglat']
-        item['houseBaiduLongitude'] = lnglat.split(',')[0][1:]
-        item['houseBaiduLatitude'] = lnglat.split(',')[1]
+        data = response.xpath('//body/div/div/div/div/div/div[@class="js-map-tab js-so-map-tab"]/attribute::data-ref').extract()
+        #如果匹配不到经纬度位置，此时data列表为空
+        if data: 
+            data_json = demjson.decode(data[0])
+            lnglat = data_json['lnglat']
+            item['houseBaiduLongitude'] = lnglat.split(',')[0][1:]
+            item['houseBaiduLatitude'] = lnglat.split(',')[1]
+        else:
+            item['houseBaiduLongitude'] = ''
+            item['houseBaiduLatitude'] = ''
 
         yield item
         
