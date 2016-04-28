@@ -61,9 +61,11 @@ NEWSPIDER_MODULE = 'SpiderAnjuke.spiders'
 
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
-#ITEM_PIPELINES = {
-#    'SpiderAnjuke.pipelines.SomePipeline': 300,
-#}
+ITEM_PIPELINES = {
+    'SpiderAnjuke.pipelines.xinfangAnjukePipeline': 1000,
+    'SpiderAnjuke.pipelines.ershoufangAnjukePipeline': 1000,
+    'SpiderAnjuke.pipelines.cityAnjukePipeline': 1000,
+}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See http://doc.scrapy.org/en/latest/topics/autothrottle.html

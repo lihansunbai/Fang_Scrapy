@@ -4,13 +4,12 @@
 import scrapy
 import demjson
 from SpiderAnjuke.items import SpideranjukeItem
-#from SpiderLianjia.spiders.startURL import startURL
+from SpiderAnjuke.spiders.startURL import startURL
 
 class xinfangAnjuke(scrapy.Spider):
     name = 'xinfangAnjuke'
     allowed_domains = ['anjuke.com']
-    #start_urls = startURL.ershoufangURL
-    start_urls = ['http://cs.fang.anjuke.com/loupan/s?p=2l']
+    start_urls = startURL.ershoufangURL
 
     def parse(self, response):
         house_page_query = '//body/div/div/div/div[@class="key-list"]/div' 
