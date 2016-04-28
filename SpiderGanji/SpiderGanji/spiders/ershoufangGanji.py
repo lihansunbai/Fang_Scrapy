@@ -36,7 +36,7 @@ class ershoufangGanji(scrapy.Spider):
 
         area_query = 'li[3]/text()'
         temp_area = response.xpath(house_info_query).xpath(area_query).extract()[0]
-        item['houseArea'] = temp_area.split('-')[1]
+        item['houseArea'] = temp_area.split('-')[1][:-1]
 
         name_query = 'li[6]/a/text()'
         name_query_2 = 'li[6]/span[2]/text()'
@@ -50,7 +50,7 @@ class ershoufangGanji(scrapy.Spider):
         houseDistrict = ''
         for dist in temp_district:
             houseDistrict = houseDistrict + '-' + dist
-        item['houseDistrict'] = houseDistrict
+        item['houseDistrict'] = houseDistrict.lstrip('-')
 
         address_query = 'li[8]/span[@title]/text()'
         item['houseAddress'] = response.xpath(house_info_query).xpath(address_query).extract()[0]
@@ -58,12 +58,17 @@ class ershoufangGanji(scrapy.Spider):
         #此XPath节点匹配经纬度信息
         position_query = '//body/div/div/div/div/div/div[@id="map_load"]'
         house_position = response.xpath(position_query)
-        house_position_1 = house_position.xpath('attribute::data-ref').extract()[0]
-        house_position_json = demjson.decode(house_position_1)
-        house_position_split = house_position_json['lnglat'].split(',')
+        house_position_1 = house_position.xpath('attribute::data-ref').extract()
+        if house_position_1:
+            house_position_json = demjson.decode(house_position_1[0])
+            house_position_split = house_position_json['lnglat'].split(',')
 
-        item['houseBaiduLongitude'] = house_position_split[0][1:-1]
-        item['houseBaiduLatitude'] = house_position_split[1]
+            item['houseBaiduLongitude'] = house_position_split[0][1:-1]
+            item['houseBaiduLatitude'] = house_position_split[1]
+        else:
+            item['houseBaiduLongitude'] = ''
+            item['houseBaiduLatitude'] = ''
+
 
 
         yield item
