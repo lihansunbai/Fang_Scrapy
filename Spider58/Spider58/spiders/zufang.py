@@ -33,7 +33,15 @@ class zufang58(scrapy.Spider):
 
         item['housePublishedTime'] = response.request.meta['time']
         item['houseTitle'] = response.xpath('//head/title/text()').extract()
-        item['houseCity'] = response.xpath('//head/meta[@name="location"]/attribute::content').extract()[0].split(';')[1].split('=')[1]
+        #这里匹配城市信息
+        city_query_1 = response.xpath('//head/meta[@name="location"]/attribute::content').extract()
+        if city_query_1:
+            item['houseCity'] = city_query_1[0].split(';')[1].split('=')[1]
+        else:
+            city_query_2 = response.xpath('//html').re(r'locallist\:\[.*?\]')[0] 
+            city_query_2_json = demjson.decode(city_query_2[10:])
+            item['houseCity'] = city_query_2_json[0]['name']
+        
         #info_1匹配name,lon,lat,baidulon,baidulat
         info_1 = response.xpath('//html').re(r'\{name\:.*?\'\}')[0]
         info_1_josn = demjson.decode(info_1)

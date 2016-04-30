@@ -36,11 +36,19 @@ class ershoufang58(scrapy.Spider):
         item = Spider58Item()
         item['housePublishedTime'] = response.request.meta['time']
         item['houseTitle'] = response.xpath('//head/title/text()').extract()
-        item['houseCity'] = response.xpath('//head/meta[@name="location"]/attribute::content').extract()[0].split(';')[1].split('=')[1]
+        #这里匹配城市信息
+        city_query_1 = response.xpath('//head/meta[@name="location"]/attribute::content').extract()
+        if city_query_1:
+            item['houseCity'] = city_query_1[0].split(';')[1].split('=')[1]
+        else:
+            city_query_2 = response.xpath('//html').re(r'locallist\:\[.*?\]')[0] 
+            city_query_2_json = demjson.decode(city_query_2[10:])
+            item['houseCity'] = city_query_2_json[0]['name']
         
         #info_1匹配name,lon,lat,baidulon,baidulat
-        info_1 = response.xpath('//html').re(r'\{name\:.*?\'\}')[0]
-        info_1_josn = demjson.decode(info_1)
+        info_1 = response.xpath('//html').re(r'xiaoqu\:\{name\:.*?\'\}')[0]
+        info_1_cut = info_1[7:]
+        info_1_josn = demjson.decode(info_1_cut)
         item['houseName'] = info_1_josn['name']
         item['houseLatitude'] = info_1_josn['lat']
         item['houseLongitude'] = info_1_josn['lon']
