@@ -25,7 +25,7 @@ class ershoufang5i5j(scrapy.Spider):
         item['houseTitle'] = response.xpath('//html/head/title/text()').extract()[0].split('_')[0]
 
         #此XPath节点可以获得房屋的所有基本信息
-        house_info_query = '//body/section/div/div/ul[@class="house-info"]'
+        house_info_query = '//body/section/div/div/ul'
 
         area_query = 'li/ul/li[3]/text()'
         item['houseArea'] = response.xpath(house_info_query).xpath(area_query).extract()[0]
@@ -61,8 +61,8 @@ class ershoufang5i5j(scrapy.Spider):
         #这里请求房屋的地址和城市
         item['houseAddress'] = response.xpath('//body/section/div/section/div[@class="xq-intro-info"]/ul/li[3]/text()').extract()[0]
         item['houseCity'] = response.xpath('//body').re(r'mapCityName.*;?')[0].split('\"')[-2]
-        item['houseBaiduLongitude'] = response.xpath('//body').re(r'mapY.*;?')[0].split('\"')[-2]
-        item['houseBaiduLatitude'] = response.xpath('//body').re(r'mapX.*;?')[0].split('\"')[-2]
+        item['houseBaiduLongitude'] = response.xpath('//body').re(r'mapY.*;?')[0].split('=')[-1].split(';')[0].replace('"','')
+        item['houseBaiduLatitude'] = response.xpath('//body').re(r'mapX.*;?')[0].split('=')[-1].split(';')[0].replace('"','')
 
         yield item
         
