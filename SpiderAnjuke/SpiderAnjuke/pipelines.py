@@ -26,7 +26,7 @@ class xinfangAnjukePipeline(object):
         #判断是否存在历史价格数据
         #这里要用字典类型中的get方法来判断，否则会报错。
         #原因是如果houseHistroyPrice不存在，那么字典旧无法索引找到此项，返回错误；而使用get方法则返回空。
-        if not item.get('houseHistroyPrice'):
+        if not item.get('houseHistoryPrice'):
             return item
 
         #打开写入的文件和CSV写入模块
@@ -58,7 +58,7 @@ class ershoufangAnjukePipeline(object):
         #判断是否存在历史价格数据
         #这里要用字典类型中的get方法来判断，否则会报错。
         #原因是如果houseHistroyPrice不存在，那么字典旧无法索引找到此项，返回错误；而使用get方法则返回空。
-        if not item.get('houseHistroyPrice'):
+        if not item.get('houseHistoryPrice'):
             return item
 
         #打开写入的文件和CSV写入模块
@@ -74,8 +74,9 @@ class ershoufangAnjukePipeline(object):
 	    times = info.keys()[0]
 	    
             price_chengjiao_tmp = string.atof(info.values()[0])
-            price_guapai = item['housePrice']
-            price_chengjiao = string.atof(info.values()[0]) * house_area
+            price_guapai = string.atof(item['housePrice'])
+            price_chengjiao =  price_chengjiao_tmp * house_area / 10000
+            
             
             house_address = item['houseAddress'].strip()
             line = (times,item['houseName'],item['houseCity'],price_chengjiao,price_guapai,house_area,house_address,item['houseBaiduLatitude'],item['houseBaiduLongitude'],item['houseTitle'])
