@@ -50,9 +50,11 @@ class ershoufang5i5jPipeline(object):
     def process_item(self,item,spider):
         if spider.name != 'ershoufang5i5j':
           return item
-	
+
         #判断是否存在历史价格数据
-        if not item['housePrice']:
+        #这里要用字典类型中的get方法来判断，否则会报错。
+        #原因是如果housePrice不存在，那么字典旧无法索引找到此项，返回错误；而使用get方法则返回空。
+        if not item.get('housePrice'):
             return item
 
         #打开写入的文件和CSV写入模块
@@ -83,10 +85,12 @@ class zufang5i5jPipeline(object):
         if spider.name != 'zufang5i5j':
           return item
 
-        #判断是否存在价格数据
-        if not item['housePrice']:
-          return item
-
+        #判断是否存在历史价格数据
+        #这里要用字典类型中的get方法来判断，否则会报错。
+        #原因是如果housePrice不存在，那么字典旧无法索引找到此项，返回错误；而使用get方法则返回空。
+        if not item.get('housePrice'):
+            return item
+	  
         #打开写入的文件和CSV写入模块
         self.file = open('zufang5i5j.csv','ab')
         csvWriter = csv.writer(self.file)
