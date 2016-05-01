@@ -9,7 +9,7 @@ from SpiderAnjuke.spiders.startURL import startURL
 class xinfangAnjuke(scrapy.Spider):
     name = 'xinfangAnjuke'
     allowed_domains = ['anjuke.com']
-    start_urls = startURL.ershoufangURL
+    start_urls = startURL.xinfangURL
 
     def parse(self, response):
         house_page_query = '//body/div/div/div/div[@class="key-list"]/div' 
