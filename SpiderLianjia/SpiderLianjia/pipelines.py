@@ -7,6 +7,7 @@
 
 import csv
 import sys
+import string
 
 class SpiderlianjiaPipeline(object):
     def process_item(self, item, spider):
@@ -69,9 +70,16 @@ class ershoufangLianjiaPipeline(object):
         #格式化item为CSV格式数据
         for house in item['houseHistoryPrice']['time']:
             price_index = item['houseHistoryPrice']['time'].index(house)
-            price_chengjiao = item['houseHistoryPrice']['price'][price_index]
-            price_guapai = item['houseHistoryPrice']['price'][price_index]
-            line = (house,item['houseName'],item['houseCity'],price_chengjiao,price_guapai,item['houseArea'],'N/A',item['houseBaiduLatitude'],item['houseBaiduLongitude'],item['houseTitle'])
+            price_chengjiao_tmp = string.atof(item['houseHistoryPrice']['price'][price_index])
+            price_guapai_tmp = string.atof(item['houseHistoryPrice']['price'][price_index])
+            house_area = string.atof(item['houseArea'])
+            price_chengjiao = price_chengjiao_tmp * house_area / 10000
+            price_guapai = price_guapai_tmp * house_area / 10000
+            if price_chengjiao == 0:
+	        price_chengjiao = item['housePrice']
+	        price_guapai = item['housePrice']
+	    
+            line = (house,item['houseName'],item['houseCity'],price_chengjiao,price_guapai,house_area,'N/A',item['houseBaiduLatitude'],item['houseBaiduLongitude'],item['houseTitle'])
             csvWriter.writerow(line)
 
 
@@ -99,9 +107,15 @@ class zufangLianjiaPipeline(object):
         #格式化item为CSV格式数据
         for house in item['houseHistoryPrice']['time']:
             price_index = item['houseHistoryPrice']['time'].index(house)
-            price_chengjiao = item['houseHistoryPrice']['price'][price_index]
-            price_guapai = item['houseHistoryPrice']['price'][price_index]
-            line = (house,item['houseName'],item['houseCity'],price_chengjiao,price_guapai,item['houseArea'],'N/A',item['houseBaiduLatitude'],item['houseBaiduLongitude'],item['houseTitle'])
+            price_chengjiao = string.atof(item['houseHistoryPrice']['price'][price_index])
+            price_guapai = string.atof(item['houseHistoryPrice']['price'][price_index])
+            house_area = string.atof(item['houseArea'])
+            
+            if price_chengjiao == 0:
+	        price_chengjiao = item['housePrice']
+	        price_guapai = item['housePrice']
+	    
+            line = (house,item['houseName'],item['houseCity'],price_chengjiao,price_guapai,house_area,'N/A',item['houseBaiduLatitude'],item['houseBaiduLongitude'],item['houseTitle'])
             csvWriter.writerow(line)
 
         return item
