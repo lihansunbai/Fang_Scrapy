@@ -38,22 +38,38 @@ class xinfangGanji(scrapy.Spider):
         temp_area = response.xpath(house_info_query).xpath(area_query).extract()[0]
         item['houseArea'] = temp_area.split('-')[1][:-1]
 
+        #此处匹配房屋所在小区名
+        #如果匹配不到就赋值为空，为什么呢？
+        #因为有些页面的确没有显示对应的小区。
         name_query = 'li[5]/a/text()'
         name_query_2 = 'li[5]/span[2]/text()'
-        if response.xpath(house_info_query).xpath(name_query).extract_first() is None:
-            item['houseName'] = response.xpath(house_info_query).xpath(name_query_2).extract()[0]
-        else:
+        name_query_3 = 'li[5]/text()'
+        if response.xpath(house_info_query).xpath(name_query).extract_first():
             item['houseName'] = response.xpath(house_info_query).xpath(name_query).extract()[0]
-
-        district_query = 'li[6]/a/text()'
-        temp_district = response.xpath(house_info_query).xpath(district_query).extract()
-        houseDistrict = ''
-        for dist in temp_district:
-            houseDistrict = houseDistrict + '-' + dist
-        item['houseDistrict'] = houseDistrict.lstrip('-')
-
+        elif response.xpath(house_info_query).xpath(name_query_2).extract_first():
+            item['houseName'] = response.xpath(house_info_query).xpath(name_query_2).extract()[0]
+        elif response.xpath(house_info_query).xpath(name_query_3).extract_first():
+            item['houseName'] = response.xpath(house_info_query).xpath(name_query_3).extract()[0]
+        else:
+            item['houseName'] = ''
+            
+        #此处匹配房屋地址
+        #有些页面有地址，有些页面只有小区。
+        #所以首先以地址为第一匹配，如果没有匹配成功则换为小区区域。
         address_query = 'li[7]/span[@title]/text()'
-        item['houseAddress'] = response.xpath(house_info_query).xpath(address_query).extract()[0]
+        if response.xpath(house_info_query).xpath(address_query).extract():
+            item['houseAddress'] = response.xpath(house_info_query).xpath(address_query).extract()[0]
+        else:
+            district_query = 'li[6]/a/text()'
+            temp_district = response.xpath(house_info_query).xpath(district_query).extract()
+            houseDistrict = ''
+            #注意此处可能也匹配不到小区区域
+            if temp_district:
+                for dist in temp_district:
+                    houseDistrict = houseDistrict + '-' + dist
+                item['houseAddress'] = houseDistrict.lstrip('-')
+            else:
+                item['houseAddress'] = ''
 
         #此节点匹配经纬度信息
         data = response.xpath('//body/div/div/div/div/div/div[@class="js-map-tab js-so-map-tab"]/attribute::data-ref').extract()
