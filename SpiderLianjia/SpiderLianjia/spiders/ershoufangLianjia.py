@@ -50,7 +50,9 @@ class ershoufangLianjia(scrapy.Spider):
         if response.xpath('//html').re(r'houseId.*,'):
             hid = response.xpath('//html').re(r'houseId.*,')[0].split('\'')[1]
             rid = response.xpath('//html').re(r'resblockId.*,')[0].split('\'')[1]
-            history_price_query = 'http://cs.lianjia.com/ershoufang/housestat?hid='+ hid +'&rid=' + rid
+            url_tmp = response.request.url.split('/')[2]
+            history_price_query = 'http://' + url_tmp + '/ershoufang/housestat?hid='+ hid +'&rid=' + rid
+            
             yield scrapy.Request(history_price_query,callback=self.parse_history_price_page_res,meta={'house_item':item},dont_filter=True)
         else:
             #获得发布时间的月份
