@@ -3,6 +3,7 @@
 
 import scrapy
 import demjson
+import urllib
 from SpiderGanji.items import SpiderganjiItem
 from SpiderGanji.spiders.startURL import startURL
 
@@ -34,23 +35,24 @@ class ershoufangGanji(scrapy.Spider):
         price_query = 'li/b[@class="basic-info-price"]/text()'
         item['housePrice'] = response.xpath(house_info_query).xpath(price_query).extract()[0]
 
-        area_query = 'li[3]/text()'
-        temp_area = response.xpath(house_info_query).xpath(area_query).extract()[0]
-        item['houseArea'] = temp_area.split('-')[1][:-1]
+        #此处匹配房屋面积
+        house_area_query = response.xpath('/html').re(r'area=.*?@')
+        if house_area_query:
+            item['houseArea'] = response.xpath('/html').re(r'area=.*?@')[0].split('=')[-1][:-1]
+        else:
+            item['houseArea'] = 1
+        #area_query = 'li[3]/text()'
+        #temp_area = response.xpath(house_info_query).xpath(area_query).extract()[0]
+        #item['houseArea'] = temp_area.split('-')[1][:-1]
 
         #此处匹配房屋所在小区名
-        #如果匹配不到就赋值为空，为什么呢？
-        #因为有些页面的确没有显示对应的小区。
-        #不要改变判断的顺序，如果html中有特殊符号插入就会导致匹配错误
-        name_query_2 = 'li[6]/a/text()'
-        name_query_3 = 'li[6]/text()'
-        name_query = 'li[6]/span[2]/attribute::title'
-        if response.xpath(house_info_query).xpath(name_query).extract_first():
-            item['houseName'] = response.xpath(house_info_query).xpath(name_query).extract()[0]
-        elif response.xpath(house_info_query).xpath(name_query_2).extract_first():
-            item['houseName'] = response.xpath(house_info_query).xpath(name_query_2).extract()[0].strip().lstrip().rstrip()
-        elif response.xpath(house_info_query).xpath(name_query_3).extract_first():
-            item['houseName'] = response.xpath(house_info_query).xpath(name_query_3).extract()[0].strip().lstrip().rstrip()
+        #这里的第一次encode是把scrapy爬出的unicode编码格式字符串重新编码为网页原本的utf-8编码格式字符串
+        #第二次的decode是把urllib解码url格式字符串后的utf-8格式字符串再次编码为python系统的unicode编码
+        #一定理解清楚这个逻辑，如果不清楚就使用scrapy shell来测试爬取数据的编码，然后再理解
+        house_name_query = response.xpath('/html').re(r'xq_name=.*?@')
+        if house_name_query:
+            name_tmp = house_name_query[0].split('=')[-1][:-1].encode('utf-8')
+            item['houseName'] = urllib.unquote(name_tmp).decode('utf-8')
         else:
             item['houseName'] = ''
 
